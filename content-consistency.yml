@@ -1,0 +1,47 @@
+# Phase 2 — CI gate.
+# Save this file as: .github/workflows/content-consistency.yml
+# (GitHub only picks up workflows from that exact path.)
+
+name: Content Consistency Gate
+
+on:
+  pull_request:
+    paths:
+      - "**/*.md"
+      - "**/*.mdx"
+      - "**/*.html"
+      - "tools/content-consistency/product-registry.yaml"
+  push:
+    branches: [main]
+
+jobs:
+  vale-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python deps
+        run: pip install pyyaml --break-system-packages
+
+      - name: Validate registry
+        run: python3 tools/content-consistency/validate_registry.py tools/content-consistency/product-registry.yaml
+
+      - name: Install Vale
+        run: |
+          curl -LO https://github.com/vale-cli/vale/releases/download/v3.14.2/vale_3.14.2_Linux_64-bit.tar.gz
+          mkdir -p bin
+          tar -xzf vale_3.14.2_Linux_64-bit.tar.gz -C bin
+          echo "$GITHUB_WORKSPACE/bin" >> "$GITHUB_PATH"
+
+      - name: Generate Vale rules from registry
+        run: python3 tools/content-consistency/generate_vale_rules.py --registry tools/content-consistency/product-registry.yaml --out tools/content-consistency/vale
+
+      - name: Run Vale (blocks on error-level findings)
+        run: vale --config=tools/content-consistency/vale/.vale.ini .
+

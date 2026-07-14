@@ -1,0 +1,27 @@
+# Phase 2 — pre-commit gate.
+# Install once per clone with:  pre-commit install
+# Runs automatically on every `git commit` from then on.
+
+repos:
+  - repo: local
+    hooks:
+      - id: validate-registry
+        name: Validate product-registry.yaml
+        entry: python3 tools/content-consistency/validate_registry.py tools/content-consistency/product-registry.yaml
+        language: system
+        files: ^tools/content-consistency/product-registry\.yaml$
+        pass_filenames: false
+
+      - id: generate-vale-rules
+        name: Regenerate Vale rules from registry
+        entry: python3 tools/content-consistency/generate_vale_rules.py --registry tools/content-consistency/product-registry.yaml --out tools/content-consistency/vale
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: vale-scan
+        name: Vale content consistency scan (staged files)
+        entry: vale --config=tools/content-consistency/vale/.vale.ini
+        language: system
+        files: \.(md|mdx|html)$
+

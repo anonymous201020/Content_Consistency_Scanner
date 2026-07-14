@@ -1,0 +1,155 @@
+version: 2   # bumped: canonical names changed, NetShield split into two products
+
+brand:
+  company:
+    canonical: "COSGrid"
+    forbidden: ["COSGrid Networks"]
+    notes: >
+      COS = Cognitive Overlay Security. Warn-only until Sep-2026 rename review.
+      NOTE: every product canonical name is now prefixed "COSGrid <Product>" —
+      if that's meant to be a hard rule (not just a naming convention), we
+      should encode it as a global_rule so a bare "MicroZAccess" heading
+      (missing the COSGrid prefix) gets flagged too. Currently NOT enforced
+      as a rule below — see the open question at the bottom of this file.
+  global_rules:
+    - forbid: ["VPN", "movpn"]
+      scope: public
+      allow_in: ["competitive-analysis/", "*/registry*", "*battlecard*"]
+      message: "Use 'ZTNA', not 'VPN', in public content."
+    - require_provenance: ["Nebula", "Slack"]
+
+products:
+  microzaccess:
+    canonical: "COSGrid MicroZAccess"
+    alternate_names: ["MicroZAccess"]
+    forbidden: ["Micro Z Access", "MZA VPN", "MicroZ Access", "movpn", "Microzaccess", "MICROZACCESS"]
+    category: "ZTNA (agent-based)"
+    url_path: "/products/ztna/microzaccess"
+    one_liner: "COSGrid's agent-based ZTNA client for zero-trust access."
+    pillar: true
+
+  swiftzaccess:
+    canonical: "COSGrid SwiftZAccess"
+    alternate_names: ["SwiftZAccess", "COSGrid Agentless ZTNA"]
+    forbidden: ["Swift Z Access", "SwiftZ Access", "SecureLink"]
+    category: "ZTNA (agentless)"
+    one_liner: "COSGrid's agentless ZTNA product."
+    pillar: true
+    notes: "Name decision finalized — no longer provisional. 'SecureLink' (the rejected alternative) is now explicitly forbidden."
+
+  securewebaccess:
+    canonical: "COSGrid SecureWebAccess"
+    alternate_names: ["COSGrid SIG", "Secure Internet Gateway"]
+    forbidden: []
+    category: "Secure Web Gateway (SWG)"
+    one_liner: "COSGrid's Secure Web Gateway product."
+    pillar: true
+    notes: "NEW product entry — no known bad variants yet. Add forbidden terms as drift is found."
+
+  qshield:
+    canonical: "COSGrid QShield"
+    alternate_names: ["COSGrid WAAP", "QShield API Security"]
+    forbidden: ["Qshield", "QSHIELD", "Q-Shield", "Q Shield"]
+    category: "WAAP / API Security"
+    editions: ["Discover", "API", "WAAP"]
+    url_path: "/products/waap/qshield"
+    one_liner: "API-security-led WAAP platform."
+    pillar: true
+    notes: >
+      OPEN QUESTION: bare "QShield" (no "COSGrid " prefix) is not listed in
+      your alternates and not in forbidden either — is bare "QShield" allowed
+      shorthand, or should it be forbidden in favor of the full canonical?
+      Left unforbidden for now; flag this back to your CEO.
+
+  nexusshield:
+    canonical: "COSGrid NexusShield"
+    alternate_names: ["NFRxG", "COSGrid NFRxG"]
+    forbidden: []
+    category: "Next-Gen Firewall (NGFW)"
+    one_liner: "COSGrid's Next-Gen Firewall product."
+    pillar: true
+    notes: >
+      NEW SPLIT: this used to be part of the old 'netshield' entry
+      (previously categorized "Firewall / FWaaS"). That entry has now been
+      split into this product (NGFW) and 'netshield_ndr' below (NDR) — they
+      are two different products going forward, not aliases of each other.
+
+  netshield_ndr:
+    canonical: "COSGrid NetShield NDR"
+    alternate_names: ["NetShield"]
+    forbidden: ["Net Shield", "Netshield"]
+    category: "NDR (Network Detection & Response)"
+    url_path: "/products/ndr/netshield"
+    one_liner: "COSGrid's Network Detection & Response product."
+    pillar: true
+    notes: "Second half of the netshield split — see nexusshield notes above."
+
+  reflex_wan:
+    canonical: "COSGrid RefleX WAN"
+    alternate_names: ["RefleX-WAN", "ReFleX Z3 SD-WAN", "Secure SD-WAN"]
+    forbidden: ["ReBaaNC", "RefleXion", "RefleXion SD-WAN", "Reflex WAN", "ReflexWAN", "ReFleX SD-WAN"]
+    category: "SD-WAN"
+    url_path: "/products/sdwan/reflex-WAN"
+    one_liner: "COSGrid's SD-WAN pillar."
+    pillar: true
+    notes: "Canonical changed from 'ReFleX-WAN' to 'COSGrid RefleX WAN'. 'ReFleX-WAN' is now an approved alternate, not the canonical."
+
+  reflex_edge:
+    canonical: "RefleX-Edge"
+    alternate_names: []
+    forbidden: []
+    category: "Component"
+    type: "component"
+    url_path: "/products/component/c-edge"
+    one_liner: "Hardware edge component for the RefleX WAN product line."
+    pillar: false
+    notes: "NEW entry — hardware component, not a standalone product. No canonical 'COSGrid' prefix per your table."
+
+  z3_sase:
+    canonical: "COSGrid Z3 SASE"
+    alternate_names: ["SASE", "COSGrid SASE"]
+    forbidden: ["Z3SASE", "Z3-SASE"]
+    category: "SASE"
+    one_liner: "COSGrid's SASE platform."
+    pillar: false
+
+  mesh_ztna:
+    canonical: "Mesh ZTNA"
+    forbidden: ["mesh ztna", "MESH ZTNA"]
+    type: category
+    notes: >
+      OPEN QUESTION: your finalized table no longer uses "Mesh ZTNA" as a
+      category — it now splits ZTNA into "ZTNA (agent-based)" for
+      MicroZAccess and "ZTNA (agentless)" for SwiftZAccess. Is "Mesh ZTNA"
+      being retired as a category term entirely, or does it still apply
+      somewhere (e.g. as a parent category for both)? Left as-is until
+      confirmed — do not delete without checking, since deleting it will
+      also remove its forbidden-casing checks.
+
+  # --- Not covered in the latest finalized table — left unchanged from the
+  # --- original catalog. Confirm whether these still need a decision pass.
+  agentless_nac:
+    canonical: "Agentless NAC"
+    forbidden: ["Agentless-NAC", "agentless nac"]
+    category: "NAC"
+    pillar: false
+
+  family_shield:
+    canonical: "Family Shield"
+    forbidden: ["FamilyShield", "Family-Shield"]
+    category: "Consumer"
+    pillar: false
+
+  focus:
+    canonical: "Focus"
+    forbidden: []
+    category: "Product"
+    pillar: false
+    notes: "Generic name — keep forbidden list empty until false-positive rate is checked."
+
+  cos:
+    canonical: "Cognitive Overlay Security"
+    aliases_ok: ["COS"]
+    forbidden: []
+    category: "Concept"
+    type: category
